@@ -1,0 +1,6 @@
+- [Express 5 req.query read-only](express5-query-readonly.md) — req.query is a getter in Express 5; validate middleware must not assign to it
+- [Recharts ResponsiveContainer heights](recharts-heights.md) — must pass explicit pixel heights to ResponsiveContainer, not rely on Tailwind h-[Npx] parent classes
+- [AI-generated escaped backticks](ai-escaped-backticks.md) — AI subagents sometimes write \` instead of ` in template literals; fix with Python replace, not sed
+- [Drizzle JSON column typing](drizzle-json-typing.md) — use .$type<T>() chained method not json<T>() generic; drizzle-orm 0.45.2 does not support the generic form
+- [Zod v3 vs v4 in validate middleware](zod-validate-compat.md) — api-zod uses zod v3 (catalog 3.25.76), server uses zod/v4; validate middleware must use structural duck type not ZodSchema from zod/v4 to accept both
+- [requireUserId + setUserId pattern](require-user-id.md) — routes use requireUserId helper (401 on missing header); frontend injects x-user-id via setUserId("demo-user") called in App.tsx through custom-fetch module

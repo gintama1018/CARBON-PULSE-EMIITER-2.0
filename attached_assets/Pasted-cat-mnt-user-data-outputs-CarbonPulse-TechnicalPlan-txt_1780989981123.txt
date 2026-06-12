@@ -1,0 +1,1449 @@
+cat > /mnt/user-data/outputs/CarbonPulse_TechnicalPlan.txt << 'ENDOFPLAN'
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║            CARBONPULSE — FULL TECHNICAL ARCHITECTURE PLAN                       ║
+║            Challenge 2: Carbon Footprint Intelligence Platform                  ║
+║            Google PromptWars x Ascent 2026                                      ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+Author         : Senior Engineering Blueprint (20+ yr experience level)
+App Name       : CarbonPulse
+Tagline        : "Precision carbon intelligence. Built for people, scaled for planet."
+Target Score   : 95+ / 100
+Date           : June 9, 2026
+Version        : 1.0.0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TABLE OF CONTENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ 01. SCORE ANALYSIS & PROJECTIONS
+ 02. EXECUTIVE ARCHITECTURE STATEMENT
+ 03. DIFFERENTIATION STRATEGY (Why this isn't another simple tracker)
+ 04. SYSTEM ARCHITECTURE & DECISIONS
+ 05. TECHNOLOGY STACK WITH RATIONALE
+ 06. MONOREPO FILE & FOLDER STRUCTURE
+ 07. GOOGLE SERVICES INTEGRATION PLAN (Deep, Not Surface)
+ 08. CARBON CALCULATION ENGINE DESIGN
+ 09. DATABASE SCHEMA DESIGN (PostgreSQL + Redis)
+ 10. REST API SPECIFICATION
+ 11. SECURITY ARCHITECTURE (OWASP TOP 10 ALIGNED)
+ 12. TESTING STRATEGY (The Score Killer — Fixed)
+ 13. ACCESSIBILITY IMPLEMENTATION (WCAG 2.1 AA)
+ 14. UI/UX DESIGN SYSTEM & COMPONENT PHILOSOPHY
+ 15. CODE QUALITY STANDARDS & TOOLING
+ 16. PERFORMANCE BUDGET & OPTIMIZATIONS
+ 17. SPRINT BREAKDOWN (3 Sprints, Hackathon Pace)
+ 18. DEPLOYMENT STRATEGY
+ 19. EVALUATION SCORE TARGETS PER CATEGORY
+ 20. RISK REGISTER
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+01. SCORE ANALYSIS & PROJECTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CHALLENGE 1 POSTMORTEM:
+  Code Quality          : 86   ← Solid. Minor smells likely from rushed refactoring.
+  Security              : 98   ← Near-perfect. Maintain exactly.
+  Efficiency            : 100  ← Perfect. Don't touch what works.
+  Testing               : 0    ← CRITICAL MISS. No /tests directory found. Zero credit.
+  Accessibility         : 96   ← Good. 2-3 ARIA gaps likely. Push to 98.
+  Google Services       : 75   ← Shallow integration. Surface-level API usage only.
+  Problem Alignment     : 98   ← Excellent narrative alignment.
+  ─────────────────────────────────────────────────────
+  TOTAL                 : 85.99 / 100
+
+ROOT CAUSE ANALYSIS:
+  The Testing = 0 dragged the score by ~6.2 points (Testing weight ≈ 6.7%).
+  Google Services at 75 suggests "token usage" — one API call, not architecture.
+  Without those two fixes, the real engineering quality was ~93+ level.
+
+PROJECTED SCORES IF WE EXECUTE THIS PLAN:
+  Code Quality          : 93  (+7   from enforced TypeScript strict mode + JSDoc)
+  Security              : 98  (=    maintain identical security posture)
+  Efficiency            : 100 (=    maintain same performance patterns)
+  Testing               : 93  (+93  from comprehensive /tests folder)
+  Accessibility         : 98  (+2   from axe-core audit + role fixes)
+  Google Services       : 92  (+17  from 6 meaningfully integrated Google APIs)
+  Problem Alignment     : 98  (=    maintain strong alignment)
+  ─────────────────────────────────────────────────────
+  PROJECTED TOTAL       : ~95.2 / 100
+
+SCORE FORMULA DERIVED:
+  Testing weight = ~6.7%, each other category ≈ 15.55%
+  New score = (93×15.55 + 98×15.55 + 100×15.55 + 93×6.7 + 98×15.55 + 92×15.55 + 98×15.55) / 100
+            ≈ 95.2 / 100
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+02. EXECUTIVE ARCHITECTURE STATEMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CarbonPulse is a full-stack Progressive Web App built on a layered architecture:
+  - React 18 + TypeScript frontend (Vite, PWA-enabled)
+  - Node.js + Express + TypeScript backend (REST API)
+  - PostgreSQL primary store + Redis cache/sessions
+  - Firebase Auth + Firestore for real-time sync
+  - Six distinct Google platform services (not decoration — functionally load-bearing)
+  - Comprehensive test suite: unit + integration + E2E + accessibility + performance
+  - OWASP-aligned security middleware stack
+
+The architecture separates CONCERNS CLEANLY:
+  1. Carbon data ingestion (activities logged by user)
+  2. Emission calculation engine (rule-based + regional factors)
+  3. AI insight generation (Google Gemini API, async)
+  4. Visualization layer (Recharts + custom D3 heatmap)
+  5. Notification system (Firebase Cloud Messaging)
+  6. Community benchmarking (anonymized aggregate data)
+
+This is NOT a CRUD app with a carbon table. It is a data intelligence platform
+with carbon as its domain — the same way Robinhood is not a database of stocks.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+03. DIFFERENTIATION STRATEGY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT EVERY OTHER TEAM WILL BUILD:
+  - Input form → Calculate CO2 → Show number → Done.
+  - One Google Maps call for a route.
+  - No tests, no auth, no persistence beyond localStorage.
+  - A pie chart from a tutorial.
+
+WHAT CARBONPULSE DOES DIFFERENTLY:
+
+  [1] PRECISION CARBON ENGINE (Not Estimates — Calibrated Factors)
+      Uses IPCC AR6 2023 emission factors, region-specific electricity grids,
+      and dietary lifecycle assessment data. Not "car = 200g/km". Correct answer:
+      diesel SUV India grid electricity = 198.4g CO2e/km (factored).
+
+  [2] GOOGLE MAPS ROUTE INTELLIGENCE
+      User doesn't input "I drove 20km". They click "Record Trip" and pick
+      two locations via Google Places Autocomplete. Maps Routes API returns
+      actual distance + mode → fed directly into the emission calculator.
+      Transport mode switching shows live CO2 delta (drive vs train vs cycle).
+
+  [3] GEMINI AI PERSONALIZED INSIGHT ENGINE (Not Generic Tips)
+      Every Monday, Gemini generates a 3-sentence insight SPECIFIC to that
+      user's pattern: "Your food emissions spiked 34% this week — three
+      chicken meals on Tuesday contributed 2.1 kgCO2e. Swapping to legumes
+      twice a week saves ≈47 kg annually, equivalent to 1 domestic flight."
+      This is the killer feature. Nobody else will have personalized AI prose.
+
+  [4] COMMUNITY BENCHMARKING (Firebase Realtime)
+      Users see anonymized percentile: "Your carbon is lower than 67% of
+      CarbonPulse users in Rajasthan." This is Firebase Realtime Database
+      doing live aggregate calculations — not a static infographic.
+
+  [5] STREAK + CARBON BUDGET SYSTEM (Gamification)
+      Weekly carbon budget (default: 100 kgCO2e). Daily streak for staying
+      under daily target. Badge system: "3-day green streak", "Flight-free
+      month", "Vegan week". Streak data stored in Redis for fast reads.
+
+  [6] PWA WITH OFFLINE ACTIVITY LOGGING
+      Service worker caches the app shell. Activities logged offline get
+      queued in IndexedDB and sync when connection returns. This is real
+      PWA engineering, not just a manifest.json.
+
+  [7] CARBON OFFSET MARKETPLACE RECOMMENDATIONS
+      After 30 days, suggest verified offset projects (Gold Standard,
+      Verra VCS) based on total footprint. Data fetched via web API.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+04. SYSTEM ARCHITECTURE & DECISIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ARCHITECTURE DIAGRAM (Text Form):
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                        CLIENT LAYER (PWA)                           │
+  │   React 18 + TypeScript + Vite  │  Service Worker (Workbox)         │
+  │   Zustand (state)               │  IndexedDB (offline queue)        │
+  └────────────────────┬────────────────────────────────────────────────┘
+                       │ HTTPS + JWT Bearer Token
+  ┌────────────────────▼────────────────────────────────────────────────┐
+  │                       API GATEWAY (Express)                         │
+  │   Helmet + CORS + Rate Limiter  │  Zod Schema Validation            │
+  │   JWT Middleware                │  Request Logger (Winston)         │
+  └──────┬──────────────┬───────────────────┬──────────────────┬────────┘
+         │              │                   │                  │
+  ┌──────▼──────┐ ┌─────▼─────┐  ┌─────────▼───────┐  ┌──────▼──────┐
+  │  Activities  │ │  Insights │  │   Users / Auth  │  │  Community  │
+  │  Controller  │ │  Controller│  │   Controller    │  │  Controller │
+  └──────┬──────┘ └─────┬─────┘  └────────┬────────┘  └──────┬──────┘
+         │              │                  │                   │
+  ┌──────▼──────────────▼──────────────────▼───────────────────▼───────┐
+  │                        SERVICE LAYER                                │
+  │  CarbonCalcService  │  GeminiService  │  MapsService  │  AuthService│
+  └──────┬──────────────────────────────────────────┬──────────────────┘
+         │                                          │
+  ┌──────▼──────────────┐          ┌────────────────▼───────────────────┐
+  │  PostgreSQL (Prisma) │          │       External APIs                │
+  │  - users             │          │  - Google Gemini API               │
+  │  - activities        │          │  - Google Maps Routes API          │
+  │  - emission_factors  │          │  - Google Places API               │
+  │  - goals             │          │  - Firebase Auth                   │
+  │  - badges            │          │  - Firebase Firestore              │
+  └──────┬──────────────┘          │  - Firebase Cloud Messaging        │
+         │                          └────────────────────────────────────┘
+  ┌──────▼──────────────┐
+  │  Redis               │
+  │  - sessions          │
+  │  - streaks           │
+  │  - rate limit slots  │
+  │  - AI insight cache  │
+  └─────────────────────┘
+
+ARCHITECTURAL DECISIONS (ADRs):
+
+ADR-001: Monorepo with pnpm workspaces
+  Reason: Shared TypeScript types between client and server prevent
+  contract drift. Single CI pipeline. Shared ESLint config.
+  Alternative rejected: Separate repos. Too much overhead, type drift risk.
+
+ADR-002: Prisma ORM over raw SQL
+  Reason: Type-safe DB access eliminates SQL injection class entirely
+  (not just mitigated — structurally impossible). Migration history.
+  Alternative rejected: Knex. Less type safety, more boilerplate.
+
+ADR-003: Zod for runtime validation at API boundary
+  Reason: TypeScript types are compile-time only. Zod validates incoming
+  JSON at runtime, generates meaningful 400 errors, and the schema is
+  the single source of truth for API contracts.
+  Alternative rejected: Joi. Less TypeScript integration.
+
+ADR-004: Firebase for real-time features, PostgreSQL for persistent data
+  Reason: Firestore's real-time listeners handle community benchmarking
+  and streak updates without polling. PostgreSQL handles complex queries,
+  joins, and the emission factor reference data.
+
+ADR-005: Zustand over Redux for client state
+  Reason: This app's state is not highly interconnected. Zustand is
+  ~8x less boilerplate, equally predictable, and tree-shakeable.
+  Alternative rejected: Redux Toolkit. Overkill for this scope.
+
+ADR-006: Workbox for Service Worker (PWA)
+  Reason: Google-maintained, production-tested, handles cache strategies
+  (NetworkFirst for API, CacheFirst for static assets), background sync.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+05. TECHNOLOGY STACK WITH RATIONALE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FRONTEND:
+  React 18.3            - Concurrent features, Suspense for code-splitting
+  TypeScript 5.4        - Strict mode enabled. No "any". Zero exceptions.
+  Vite 5.2              - Sub-100ms HMR. Native ESM. 10x faster than CRA.
+  Tailwind CSS 3.4      - Utility-first. JIT compiler eliminates unused CSS.
+  shadcn/ui             - Accessible, unstyled primitives (Radix UI under hood)
+  Recharts 2.12         - Composable chart library built on D3
+  D3.js 7 (partial)     - Carbon heatmap calendar (GitHub contribution style)
+  Zustand 4             - Minimal, hook-based global state
+  React Query 5         - Server state management, caching, background refetch
+  React Hook Form 7     - Performant forms, minimal re-renders
+  Zod 3                 - Shared validation schemas (client + server)
+  Workbox 7             - Service Worker, background sync, PWA
+  Vite PWA Plugin       - manifest.json, icons, iOS meta tags
+
+BACKEND:
+  Node.js 20 LTS        - Even-numbered LTS for stability
+  Express 4.19          - Battle-tested, minimal, extensible
+  TypeScript 5.4        - Strict mode, same config as frontend
+  Prisma 5.14           - Type-safe ORM, migration engine, Prisma Studio
+  PostgreSQL 16         - JSONB for emission factor metadata, CTEs for analytics
+  Redis 7               - Sessions, rate limit counters, AI insight cache (TTL 24h)
+  Winston 3             - Structured JSON logging (production) + colorized (dev)
+  Zod 3                 - Runtime request validation (same schemas as frontend)
+  Bcrypt / Argon2id     - Password hashing (Argon2id preferred per OWASP 2024)
+  Helmet 7              - HTTP security headers (CSP, HSTS, X-Frame-Options)
+  express-rate-limit    - Per-IP rate limiting: 100 req/15min general, 5/15min auth
+  CORS                  - Whitelist-based origin control
+
+GOOGLE / FIREBASE:
+  Firebase Auth 10      - Google Sign-In + Email/Password, JWT verification
+  Firebase Firestore    - Real-time community stats and streak sync
+  Firebase Cloud Msgs   - Push notifications (weekly insight delivery)
+  Google Maps JS API    - Map rendering, route visualization
+  Google Routes API     - Distance matrix, route calculation
+  Google Places API     - Location autocomplete for trip origin/destination
+  Google Gemini 1.5 API - Weekly personalized insight generation (Flash model)
+  Google Analytics 4    - User behavior, feature engagement tracking
+  Google Fonts (Inter)  - Typography via CSS @import, GDPR-safe subset
+
+TESTING:
+  Vitest 1.6            - Unit tests (Vite-native, faster than Jest for this stack)
+  React Testing Library - Component tests (user-behavior focused, not impl.)
+  Supertest 7           - HTTP integration tests for Express endpoints
+  Playwright 1.44       - E2E tests for critical user flows (Chromium + WebKit)
+  axe-core 4            - Automated accessibility testing in component tests
+  MSW (Mock Svc Worker) - API mocking in component tests (no real network calls)
+  Lighthouse CI         - Performance budgets in CI pipeline
+  Istanbul / c8         - Code coverage reporting (target: 82%)
+
+TOOLING / INFRA:
+  pnpm 9               - Fast, disk-efficient, strict dependency resolution
+  ESLint 9             - Flat config, TypeScript, React, accessibility plugins
+  Prettier 3           - Opinionated formatter, no debates
+  Husky + lint-staged  - Pre-commit hooks prevent bad code from entering repo
+  commitlint           - Conventional commits (feat/fix/test/chore/docs)
+  GitHub Actions       - CI: lint → typecheck → test → build → lighthouse
+  Docker               - Containerized backend for reproducible deployments
+  Render / Railway     - Backend hosting (Render has Docker support, free tier)
+  Vercel               - Frontend hosting (zero-config Vite, preview deploys)
+  Cloudflare           - DNS, edge caching for static assets
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+06. MONOREPO FILE & FOLDER STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+carbonpulse/
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml                     # Lint → TypeCheck → Test → Build
+│   │   └── lighthouse.yml             # Performance budget checks
+│   └── PULL_REQUEST_TEMPLATE.md
+├── packages/
+│   ├── shared/                        # SHARED: types, constants, schemas
+│   │   ├── src/
+│   │   │   ├── types/
+│   │   │   │   ├── activity.types.ts  # ActivityLog, Category, EmissionFactor
+│   │   │   │   ├── user.types.ts      # User, UserProfile, UserSettings
+│   │   │   │   ├── insight.types.ts   # GeminiInsight, WeeklyReport
+│   │   │   │   └── api.types.ts       # ApiResponse<T>, PaginatedResponse<T>
+│   │   │   ├── schemas/
+│   │   │   │   ├── activity.schema.ts # Zod schemas (used on both sides)
+│   │   │   │   ├── user.schema.ts
+│   │   │   │   └── auth.schema.ts
+│   │   │   └── constants/
+│   │   │       ├── emission-factors.ts # IPCC AR6 emission factors by category
+│   │   │       └── categories.ts      # Enum: TRANSPORT, FOOD, ENERGY, SHOPPING
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── client/                        # FRONTEND: React PWA
+│   │   ├── public/
+│   │   │   ├── manifest.json          # PWA manifest
+│   │   │   ├── icons/                 # 192x192, 512x512, maskable
+│   │   │   └── sw-register.js
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── ui/                # shadcn primitives (Button, Card, etc.)
+│   │   │   │   ├── charts/
+│   │   │   │   │   ├── CarbonDonut.tsx          # Daily breakdown donut
+│   │   │   │   │   ├── TrendLine.tsx            # 30-day trend (Recharts)
+│   │   │   │   │   └── ContributionHeatmap.tsx  # D3 calendar heatmap
+│   │   │   │   ├── activities/
+│   │   │   │   │   ├── ActivityForm.tsx          # Log new activity
+│   │   │   │   │   ├── ActivityCard.tsx          # Single activity display
+│   │   │   │   │   ├── ActivityList.tsx          # Virtualised list (react-window)
+│   │   │   │   │   └── TransportPicker.tsx       # Maps + emission delta preview
+│   │   │   │   ├── insights/
+│   │   │   │   │   ├── InsightCard.tsx            # Gemini insight display
+│   │   │   │   │   └── WeeklyReport.tsx           # Full weekly breakdown
+│   │   │   │   ├── gamification/
+│   │   │   │   │   ├── StreakBadge.tsx
+│   │   │   │   │   ├── CarbonBudgetRing.tsx       # Circular progress ring
+│   │   │   │   │   └── BadgeGrid.tsx
+│   │   │   │   └── layout/
+│   │   │   │       ├── AppShell.tsx
+│   │   │   │       ├── BottomNav.tsx              # Mobile navigation
+│   │   │   │       └── TopBar.tsx
+│   │   │   ├── pages/
+│   │   │   │   ├── Dashboard/
+│   │   │   │   │   └── DashboardPage.tsx         # Summary + quick actions
+│   │   │   │   ├── Log/
+│   │   │   │   │   └── LogActivityPage.tsx       # Log new activity
+│   │   │   │   ├── Insights/
+│   │   │   │   │   └── InsightsPage.tsx          # AI insights + trends
+│   │   │   │   ├── Goals/
+│   │   │   │   │   └── GoalsPage.tsx             # Set/track carbon goals
+│   │   │   │   ├── Community/
+│   │   │   │   │   └── CommunityPage.tsx         # Benchmarking + leaderboard
+│   │   │   │   ├── Offsets/
+│   │   │   │   │   └── OffsetsPage.tsx           # Recommended offset projects
+│   │   │   │   └── Auth/
+│   │   │   │       ├── LoginPage.tsx
+│   │   │   │       └── OnboardingPage.tsx        # First-use profile setup
+│   │   │   ├── hooks/
+│   │   │   │   ├── useActivities.ts              # React Query hook
+│   │   │   │   ├── useInsights.ts
+│   │   │   │   ├── useStreak.ts                  # Firestore real-time hook
+│   │   │   │   ├── useCarbonBudget.ts
+│   │   │   │   ├── useGoogleMaps.ts              # Maps API wrapper
+│   │   │   │   └── useOfflineSync.ts             # IndexedDB + background sync
+│   │   │   ├── services/
+│   │   │   │   ├── api.service.ts                # Axios instance + interceptors
+│   │   │   │   ├── firebase.service.ts           # Firebase init + exports
+│   │   │   │   ├── analytics.service.ts          # GA4 event helpers
+│   │   │   │   └── maps.service.ts               # Maps/Routes/Places wrappers
+│   │   │   ├── store/
+│   │   │   │   ├── auth.store.ts                 # User session (Zustand)
+│   │   │   │   ├── activities.store.ts           # Offline queue (Zustand persist)
+│   │   │   │   └── ui.store.ts                   # Theme, modals, loading states
+│   │   │   ├── styles/
+│   │   │   │   ├── globals.css                   # Tailwind directives
+│   │   │   │   └── themes.css                    # CSS custom properties
+│   │   │   └── utils/
+│   │   │       ├── carbonCalc.util.ts            # Client-side preview calculations
+│   │   │       ├── dateFormat.util.ts
+│   │   │       ├── co2Format.util.ts             # "1.2 kgCO2e" → "1,200 gCO2e"
+│   │   │       └── a11y.util.ts                  # ARIA helpers
+│   │   ├── tests/                     # FRONTEND TESTS (Vitest + RTL + Playwright)
+│   │   │   ├── unit/
+│   │   │   │   ├── carbonCalc.test.ts             # Emission calculation math
+│   │   │   │   ├── co2Format.test.ts              # Formatting edge cases
+│   │   │   │   └── dateFormat.test.ts
+│   │   │   ├── components/
+│   │   │   │   ├── ActivityForm.test.tsx          # Form validation, submit
+│   │   │   │   ├── CarbonDonut.test.tsx           # Chart renders, data props
+│   │   │   │   ├── InsightCard.test.tsx           # AI content display
+│   │   │   │   ├── TransportPicker.test.tsx       # Maps integration (MSW mocked)
+│   │   │   │   └── StreakBadge.test.tsx
+│   │   │   ├── accessibility/
+│   │   │   │   ├── Dashboard.a11y.test.tsx        # axe-core on page renders
+│   │   │   │   ├── ActivityForm.a11y.test.tsx
+│   │   │   │   └── Navigation.a11y.test.tsx
+│   │   │   ├── e2e/                               # Playwright
+│   │   │   │   ├── auth.spec.ts                   # Login → onboarding flow
+│   │   │   │   ├── logActivity.spec.ts            # End-to-end activity logging
+│   │   │   │   ├── dashboard.spec.ts              # Dashboard data rendering
+│   │   │   │   ├── insights.spec.ts               # AI insight generation trigger
+│   │   │   │   └── offlineSync.spec.ts            # PWA offline queue behavior
+│   │   │   ├── mocks/
+│   │   │   │   ├── handlers.ts                    # MSW API mock handlers
+│   │   │   │   ├── server.ts                      # MSW server setup (Node)
+│   │   │   │   └── browser.ts                     # MSW worker (browser)
+│   │   │   └── setup.ts                           # Global test setup, axe config
+│   │   ├── index.html
+│   │   ├── vite.config.ts
+│   │   ├── tailwind.config.ts
+│   │   └── package.json
+│   │
+│   └── server/                        # BACKEND: Express API
+│       ├── src/
+│       │   ├── controllers/
+│       │   │   ├── auth.controller.ts             # Register, login, refresh token
+│       │   │   ├── activities.controller.ts       # CRUD for activity logs
+│       │   │   ├── insights.controller.ts         # Get/trigger Gemini insights
+│       │   │   ├── goals.controller.ts            # Set/update carbon goals
+│       │   │   ├── community.controller.ts        # Aggregated benchmarking data
+│       │   │   └── user.controller.ts             # Profile, settings
+│       │   ├── routes/
+│       │   │   ├── auth.routes.ts
+│       │   │   ├── activities.routes.ts
+│       │   │   ├── insights.routes.ts
+│       │   │   ├── goals.routes.ts
+│       │   │   ├── community.routes.ts
+│       │   │   └── user.routes.ts
+│       │   ├── middleware/
+│       │   │   ├── auth.middleware.ts             # Firebase JWT verification
+│       │   │   ├── rateLimiter.middleware.ts      # Redis-backed rate limiting
+│       │   │   ├── validate.middleware.ts         # Zod schema validation factory
+│       │   │   ├── errorHandler.middleware.ts     # Global error → ApiError shape
+│       │   │   ├── requestId.middleware.ts        # UUID per request (trace ID)
+│       │   │   └── sanitize.middleware.ts         # Input sanitization (DOMPurify)
+│       │   ├── services/
+│       │   │   ├── carbonCalc.service.ts          # Core emission calculation engine
+│       │   │   ├── gemini.service.ts              # Gemini API client + prompt builder
+│       │   │   ├── maps.service.ts                # Google Routes API integration
+│       │   │   ├── fcm.service.ts                 # Firebase Cloud Messaging
+│       │   │   ├── streak.service.ts              # Streak calculation + Redis writes
+│       │   │   └── aggregation.service.ts         # Community stats aggregation
+│       │   ├── models/                            # Prisma-generated types live here
+│       │   │   └── index.ts                       # Re-exports Prisma client
+│       │   ├── config/
+│       │   │   ├── app.config.ts                  # All env vars, validated w/ Zod
+│       │   │   ├── firebase.config.ts             # Admin SDK init
+│       │   │   ├── redis.config.ts                # ioredis instance
+│       │   │   └── logger.config.ts               # Winston configuration
+│       │   └── app.ts                             # Express app assembly
+│       ├── prisma/
+│       │   ├── schema.prisma                      # Database schema
+│       │   ├── migrations/                        # Migration history
+│       │   └── seed.ts                            # Emission factor seed data
+│       ├── tests/                     # BACKEND TESTS (Vitest + Supertest)
+│       │   ├── unit/
+│       │   │   ├── carbonCalc.service.test.ts     # Emission math accuracy
+│       │   │   ├── gemini.service.test.ts         # Prompt building, response parsing
+│       │   │   ├── streak.service.test.ts         # Streak logic edge cases
+│       │   │   └── aggregation.service.test.ts    # Stats calculation
+│       │   ├── integration/
+│       │   │   ├── auth.test.ts                   # Register, login, token refresh
+│       │   │   ├── activities.test.ts             # Create, read, update, delete
+│       │   │   ├── insights.test.ts               # Trigger, fetch AI insights
+│       │   │   ├── goals.test.ts                  # Goal CRUD + progress calc
+│       │   │   └── community.test.ts              # Benchmark data accuracy
+│       │   ├── fixtures/
+│       │   │   ├── users.fixture.ts               # Test user factory
+│       │   │   ├── activities.fixture.ts          # Sample activity payloads
+│       │   │   └── emission-factors.fixture.ts    # Seeded emission factor data
+│       │   └── helpers/
+│       │       ├── testApp.ts                     # Express test instance
+│       │       ├── testDb.ts                      # Prisma test client (test DB)
+│       │       └── authHelper.ts                  # JWT generation for tests
+│       ├── Dockerfile
+│       ├── package.json
+│       └── tsconfig.json
+│
+├── .env.example                       # All required env vars documented
+├── .eslintrc.json                     # Shared ESLint config
+├── .prettierrc                        # Shared Prettier config
+├── commitlint.config.js               # Conventional commits enforcement
+├── pnpm-workspace.yaml
+└── package.json                       # Root: dev scripts, husky, lint-staged
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+07. GOOGLE SERVICES INTEGRATION PLAN (Target: 92/100)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The previous 75/100 means Google Services were cosmetic. This plan makes each
+one ARCHITECTURALLY ESSENTIAL — remove any one and a core feature breaks.
+
+  [1] FIREBASE AUTHENTICATION
+      Integration depth: Deep (auth is the entire security boundary)
+      Usage: Google Sign-In + Email/Password. Firebase Admin SDK verifies
+      JWT tokens in every API middleware call. Token refresh handled client-side
+      via Firebase SDK (automatic). User UID is foreign key in PostgreSQL.
+      File: packages/server/src/middleware/auth.middleware.ts
+      Test: packages/server/tests/integration/auth.test.ts
+
+  [2] GOOGLE MAPS JAVASCRIPT API + PLACES API
+      Integration depth: Deep (Transport logging doesn't work without it)
+      Usage: TransportPicker.tsx renders an embedded map. User types origin
+      in a Places Autocomplete input, destination in a second input.
+      Places API returns lat/lng pairs. Polyline shown on map.
+      File: packages/client/src/components/activities/TransportPicker.tsx
+      File: packages/client/src/services/maps.service.ts
+
+  [3] GOOGLE ROUTES API (Distance Matrix)
+      Integration depth: Deep (emission calculation accuracy depends on it)
+      Usage: Backend routes service calls Routes API with origin + destination
+      lat/lng to get precise route distance in meters. This feeds directly into
+      the CarbonCalcService. Transport mode is also returned for validation.
+      Why server-side: Protect API key. Allows server-side caching of routes.
+      File: packages/server/src/services/maps.service.ts
+      Example: POST /api/activities/transport-preview
+               Body: { origin: {lat, lng}, destination: {lat, lng}, mode: 'DRIVE' }
+               Response: { distance_m: 15420, estimated_co2_g: 3084.0 }
+
+  [4] GOOGLE GEMINI 1.5 FLASH API
+      Integration depth: Deep (the entire Insights page depends on this)
+      Usage: Once per week (cron at Sunday 23:59), Gemini generates a
+      personalized insight for each active user. The prompt is constructed
+      from the user's last 7 days of activity data, their category breakdown,
+      their trend vs previous week, and their stated goals. Gemini returns
+      structured JSON with: insight_text, primary_driver, suggested_action,
+      projected_annual_saving_kg. This JSON is stored in PostgreSQL and
+      served to the Insights page. The response is cached in Redis for 24h
+      to avoid redundant API calls on page refresh.
+      File: packages/server/src/services/gemini.service.ts
+      Prompt template: See CARBON CALCULATION ENGINE section.
+
+  [5] FIREBASE FIRESTORE (Real-time Community Benchmarking)
+      Integration depth: Medium-Deep (Community page is real-time via Firestore)
+      Usage: A Firestore collection 'community_stats' stores anonymized, 
+      aggregated daily totals per region (India/Rajasthan/Global). Client
+      uses onSnapshot() to receive live updates. User sees their percentile
+      rank update in real-time as others log activities. No user PII in
+      Firestore — only aggregated regional totals and the current user's
+      position in the distribution.
+      File: packages/client/src/hooks/useStreak.ts (Firestore listener)
+      Collection: community_stats/{region}/daily/{YYYY-MM-DD}
+
+  [6] FIREBASE CLOUD MESSAGING (Push Notifications)
+      Integration depth: Medium (engagement layer for the insights feature)
+      Usage: When a weekly Gemini insight is generated, FCM sends a push
+      notification to the user's registered devices: "Your weekly carbon
+      report is ready. You saved 12% vs last week!" Service worker handles
+      the push event and shows notification even when app is closed.
+      File: packages/server/src/services/fcm.service.ts
+      File: packages/client/public/firebase-messaging-sw.js
+
+  [7] GOOGLE ANALYTICS 4 (Behavioral Intelligence)
+      Integration depth: Light (but correctly implemented via event schema)
+      Usage: GA4 with custom events for feature engagement tracking.
+      Events: activity_logged (category, co2_grams), insight_viewed (week_no),
+      goal_set (target_kg), offset_clicked (project_id), streak_achieved (days).
+      File: packages/client/src/services/analytics.service.ts
+      Note: No PII in GA4. Only aggregated usage events.
+
+  ENVIRONMENT VARIABLES REQUIRED (.env):
+    VITE_FIREBASE_API_KEY=
+    VITE_FIREBASE_AUTH_DOMAIN=
+    VITE_FIREBASE_PROJECT_ID=
+    VITE_FIREBASE_MESSAGING_SENDER_ID=
+    VITE_FIREBASE_APP_ID=
+    VITE_GOOGLE_MAPS_API_KEY=
+    FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON=   (server, base64 encoded)
+    GEMINI_API_KEY=                        (server only, never exposed to client)
+    GOOGLE_ROUTES_API_KEY=                 (server only)
+    VITE_GA4_MEASUREMENT_ID=
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+08. CARBON CALCULATION ENGINE DESIGN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EMISSION FACTORS (IPCC AR6 2023 + Regional Grid Data):
+
+  TRANSPORT (gCO2e per passenger-km):
+    Petrol car (India avg)     : 192 g/km
+    Diesel car (India avg)     : 171 g/km
+    Motorcycle (India avg)     : 103 g/km
+    Bus (Indian cities)        :  89 g/km
+    Metro/Suburban Rail        :  41 g/km
+    Domestic Flight (India)    : 255 g/km (includes RFI multiplier 1.9x)
+    International Flight (eco) : 195 g/km
+    Bicycle / Walking          :   0 g/km
+
+  FOOD (gCO2e per kg of food):
+    Beef (feedlot)             : 99,500 g/kg (99.5 kgCO2e/kg)
+    Lamb                       : 39,200 g/kg
+    Pork                       : 12,100 g/kg
+    Chicken                    :  9,870 g/kg
+    Fish (wild caught)         :  5,100 g/kg
+    Dairy (milk, 1L)           :  3,200 g/kg
+    Eggs (per dozen)           :  4,500 g/kg
+    Rice (Indian paddy)        :  4,450 g/kg  (methane-intensive)
+    Legumes / Pulses           :  2,000 g/kg
+    Vegetables (local, India)  :    980 g/kg
+    Vegetables (imported)      :  2,100 g/kg
+
+  HOME ENERGY (gCO2e per unit):
+    Electricity (India avg)    : 820 g/kWh (CEA grid intensity 2023)
+    Electricity (Rajasthan)    : 890 g/kWh (coal-heavy state grid)
+    Piped Natural Gas          : 2,204 g/m3
+    LPG cooking gas (1 cylinder 14.2kg) : 44,100 gCO2e
+
+  SHOPPING (gCO2e per item category):
+    Cotton t-shirt (fast fashion) : 10,000 g
+    Jeans (cotton denim)          : 33,000 g
+    Smartphone (new)              : 70,000 g
+    Laptop (new)                  : 350,000 g
+    Car purchase (amortised/yr)   : 8,500,000 g/year
+
+  CALCULATION FORMULA:
+    TotalCO2e = Σ(activity_quantity × emission_factor × regional_multiplier)
+
+    regional_multiplier for electricity defaults to 1.0 for national average.
+    Set to 1.085 for Rajasthan, 0.89 for Maharashtra (more renewables), etc.
+
+GEMINI PROMPT TEMPLATE (structured output):
+  System prompt:
+    "You are a carbon footprint analyst. Respond ONLY with valid JSON.
+     Schema: { insight_text: string (max 80 words), primary_driver: string,
+               suggested_action: string (max 60 words), projected_annual_saving_kg: number }"
+
+  User prompt:
+    "User data for week ending {date}:
+     Total CO2e: {total_kg} kg
+     vs last week: {delta_percent}% {direction}
+     Category breakdown: {breakdown_json}
+     User's weekly goal: {goal_kg} kg
+     Categories above average for their region: {above_avg_list}
+     Generate a personalized, actionable insight."
+
+  Response parsing: JSON.parse() with try/catch. If parse fails,
+  fallback to generic template insight. Never show raw AI errors to user.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+09. DATABASE SCHEMA DESIGN (Prisma)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+model User {
+  id                String      @id @default(cuid())
+  firebaseUid       String      @unique           // Firebase Auth UID
+  email             String      @unique
+  displayName       String?
+  avatarUrl         String?
+  region            String      @default("IN")    // ISO 3166 for regional factors
+  weeklyBudgetKg    Float       @default(100.0)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  activities        Activity[]
+  goals             Goal[]
+  insights          Insight[]
+  fcmTokens         FcmToken[]
+}
+
+model Activity {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  category        Category
+  subcategory     String      // e.g. "petrol_car", "chicken", "electricity"
+  quantity        Float       // km, kg, kWh, etc.
+  unit            String      // "km", "kg", "kWh"
+  co2Grams        Float       // calculated value, stored for fast aggregation
+  description     String?     // optional user note
+  loggedAt        DateTime    @default(now())
+  originLat       Float?      // Transport: origin coordinates
+  originLng       Float?
+  destLat         Float?      // Transport: destination coordinates
+  destLng         Float?
+  createdAt       DateTime    @default(now())
+
+  @@index([userId, loggedAt])          // covers 90% of queries
+  @@index([userId, category, loggedAt])
+}
+
+model EmissionFactor {
+  id              String   @id @default(cuid())
+  category        Category
+  subcategory     String   @unique
+  factorGPerUnit  Float    // gCO2e per unit
+  unit            String
+  region          String   @default("IN")
+  source          String   // "IPCC AR6 2023", "CEA 2023"
+  validFrom       DateTime
+  metadata        Json?    // additional context (transport mode, diet type, etc.)
+
+  @@index([category, subcategory, region])
+}
+
+model Goal {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  targetKgPerWeek Float
+  category        Category?   // null = overall goal
+  startDate       DateTime
+  endDate         DateTime?
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+}
+
+model Insight {
+  id                    String   @id @default(cuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id])
+  weekStartDate         DateTime
+  insightText           String
+  primaryDriver         String
+  suggestedAction       String
+  projectedSavingKgYear Float
+  totalCo2KgForWeek     Float
+  deltaFromPrevWeek     Float    // percentage
+  rawGeminiResponse     Json?    // store for debugging
+  createdAt             DateTime @default(now())
+
+  @@unique([userId, weekStartDate])
+}
+
+model FcmToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  createdAt DateTime @default(now())
+}
+
+enum Category {
+  TRANSPORT
+  FOOD
+  ENERGY
+  SHOPPING
+  WASTE
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10. REST API SPECIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BASE URL: /api/v1
+AUTH: All endpoints require Authorization: Bearer <firebase_jwt>
+      except /auth/verify-token and public /health.
+
+AUTH ENDPOINTS:
+  POST   /auth/verify-token        Verify Firebase JWT, create user if first login
+  POST   /auth/refresh             Refresh session (Redis-backed)
+  DELETE /auth/logout              Invalidate session token in Redis
+
+USER ENDPOINTS:
+  GET    /users/me                 Get current user profile
+  PATCH  /users/me                 Update profile (region, budget, display name)
+  DELETE /users/me                 Account deletion (GDPR - purge all data)
+
+ACTIVITY ENDPOINTS:
+  GET    /activities               List user activities (paginated, filterable)
+         ?page=1&limit=20&category=TRANSPORT&from=2026-06-01&to=2026-06-30
+  POST   /activities               Log new activity
+         Body: { category, subcategory, quantity, unit, loggedAt?, description? }
+         Response: { ...activity, co2Grams (calculated server-side) }
+  GET    /activities/:id           Get single activity
+  PATCH  /activities/:id           Update activity
+  DELETE /activities/:id           Delete activity
+  POST   /activities/transport-preview  Preview CO2 for transport route
+         Body: { originLat, originLng, destLat, destLng, mode }
+         Response: { distanceMeters, co2Grams, durationSeconds }
+
+INSIGHTS ENDPOINTS:
+  GET    /insights                 List all user insights (newest first)
+  GET    /insights/latest          Get this week's insight (or trigger generation)
+  POST   /insights/generate        Manually trigger Gemini insight generation
+  GET    /insights/weekly-summary  Get week-by-week summary for chart
+
+GOALS ENDPOINTS:
+  GET    /goals                    List user goals
+  POST   /goals                    Create goal
+  PATCH  /goals/:id                Update goal
+  DELETE /goals/:id                Archive goal
+
+COMMUNITY ENDPOINTS:
+  GET    /community/benchmark      Get user's percentile in their region
+  GET    /community/trends         Regional average over last 30 days
+
+STATS ENDPOINTS:
+  GET    /stats/daily              Daily totals for last N days
+  GET    /stats/category-breakdown Category totals for date range
+  GET    /stats/streak             Current streak and history
+
+RESPONSE ENVELOPE:
+  Success: { success: true, data: T, meta?: { page, limit, total } }
+  Error:   { success: false, error: { code: string, message: string, details?: any } }
+
+ERROR CODES:
+  AUTH_INVALID_TOKEN     HTTP 401
+  AUTH_TOKEN_EXPIRED     HTTP 401
+  RATE_LIMIT_EXCEEDED    HTTP 429
+  VALIDATION_ERROR       HTTP 400
+  RESOURCE_NOT_FOUND     HTTP 404
+  FORBIDDEN              HTTP 403
+  INTERNAL_ERROR         HTTP 500
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+11. SECURITY ARCHITECTURE (OWASP TOP 10 2021 ALIGNED)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A01 — BROKEN ACCESS CONTROL:
+  - Every route requires auth middleware (no accidental public routes)
+  - Row-level security: users can only access their own activities
+    (enforced via userId === req.user.uid in all DB queries, not just routes)
+  - Admin routes non-existent in this app (no privilege escalation surface)
+
+A02 — CRYPTOGRAPHIC FAILURES:
+  - HTTPS enforced via HSTS header (Helmet: max-age=31536000; includeSubDomains)
+  - Passwords hashed with Argon2id (not bcrypt — OWASP 2024 recommendation)
+  - Firebase JWTs signed with RS256 (asymmetric, unguessable)
+  - No sensitive data in localStorage (tokens stored in memory or httpOnly cookies)
+  - Google API keys scoped: Maps key restricted to HTTP referrer (domain)
+  - Gemini/Routes keys backend-only, never in frontend bundle
+
+A03 — INJECTION:
+  - Prisma ORM: parameterized queries by design — SQL injection structurally impossible
+  - Input sanitization via DOMPurify on all string inputs before DB write
+  - Zod validation rejects unexpected fields (strict schemas)
+  - No eval(), no dynamic SQL concatenation anywhere
+
+A05 — SECURITY MISCONFIGURATION:
+  - Helmet.js: CSP, X-Content-Type-Options, X-Frame-Options: DENY,
+    Referrer-Policy: strict-origin-when-cross-origin
+  - CSP: script-src 'self' *.googleapis.com *.firebaseapp.com; no unsafe-inline
+  - CORS: explicit whitelist of allowed origins (not "*")
+  - Error messages: production errors never expose stack traces
+    (only logged server-side, generic message to client)
+  - Environment validation at startup: app refuses to start if required
+    env vars are missing (fail-fast, no partial configuration)
+
+A07 — IDENTIFICATION & AUTHENTICATION FAILURES:
+  - Rate limiting: 5 failed auth attempts per 15 minutes per IP (Redis counter)
+  - Firebase handles brute force protection on the auth side
+  - Session invalidation on logout (Redis blacklist of revoked token JTIs)
+  - Token expiry: Firebase ID tokens expire after 1 hour (short-lived by design)
+
+A08 — SOFTWARE AND DATA INTEGRITY FAILURES:
+  - pnpm lockfile committed, no floating version ranges in production deps
+  - Subresource Integrity not applicable (self-hosted frontend on Vercel)
+  - Dependabot configured for weekly security alerts
+
+ADDITIONAL:
+  - All API responses include: X-Request-ID (trace ID for debugging)
+  - Log all auth events (login, logout, failed attempts) to Winston
+  - No PII in logs (email hashed/masked in log output)
+  - Rate limiting: 100 requests/15min general, 20/15min for POST endpoints
+  - File upload: not supported in this app (no file upload attack surface)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+12. TESTING STRATEGY (Target: 93/100 — From Zero to Production-Grade)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+THE PRIME DIRECTIVE: This time, tests are written ALONGSIDE the code,
+not after. The /tests folder is the first thing committed. Non-negotiable.
+
+COVERAGE TARGETS:
+  Backend unit tests          : 85% line coverage
+  Backend integration tests   : all 15 API endpoint groups
+  Frontend component tests    : all 12 user-facing components
+  Accessibility tests         : all 5 pages
+  E2E tests                   : 5 critical user flows
+  Overall coverage            : 82%+ (Istanbul/c8)
+
+TESTING LAYERS:
+
+  LAYER 1: UNIT TESTS (Vitest — runs in <1s per file)
+  ─────────────────────────────────────────────────────
+  Target: Pure functions and services in isolation.
+  All external dependencies (Prisma, Redis, Gemini API) are mocked.
+
+  packages/server/tests/unit/carbonCalc.service.test.ts:
+    ✓ correctly calculates petrol car emission for 15km trip
+    ✓ correctly applies Rajasthan regional electricity multiplier
+    ✓ returns 0 for bicycle/walking transport
+    ✓ handles unknown subcategory gracefully (returns null, logs warning)
+    ✓ handles negative quantity input (throws ValidationError)
+    ✓ beef emission calculation matches IPCC AR6 reference value
+    ✓ correctly converts gram to kg on output
+
+  packages/server/tests/unit/gemini.service.test.ts:
+    ✓ buildPrompt() produces valid JSON-schema-compliant prompt string
+    ✓ parseResponse() correctly extracts structured JSON from Gemini output
+    ✓ parseResponse() falls back to template on malformed JSON
+    ✓ parseResponse() falls back to template on missing required fields
+
+  packages/server/tests/unit/streak.service.test.ts:
+    ✓ streak increments on consecutive days under budget
+    ✓ streak resets to 0 on day above budget
+    ✓ streak does not break on future-dated activity (edge case)
+    ✓ streak is idempotent on duplicate logs in same day
+
+  packages/client/tests/unit/carbonCalc.test.ts:
+    ✓ client-side preview matches server-side calculation for same inputs
+    ✓ co2Format correctly formats 1200g as "1.2 kgCO2e"
+    ✓ co2Format correctly formats 450g as "450 gCO2e"
+
+  LAYER 2: COMPONENT TESTS (Vitest + React Testing Library + MSW)
+  ────────────────────────────────────────────────────────────────
+  Philosophy: Test behavior, not implementation. No snapshot tests.
+  MSW intercepts API calls — no real network calls in component tests.
+
+  ActivityForm.test.tsx:
+    ✓ renders all required fields for TRANSPORT category
+    ✓ shows TransportPicker when TRANSPORT category selected
+    ✓ validates required fields on submit attempt
+    ✓ displays calculated CO2 preview after transport route selection
+    ✓ submits form and calls POST /activities on valid data
+    ✓ shows success toast after successful submission
+    ✓ shows error message on API failure (MSW returns 500)
+    ✓ disables submit button during loading state
+
+  InsightCard.test.tsx:
+    ✓ displays insight text, primary driver, and suggested action
+    ✓ shows loading skeleton while fetching
+    ✓ shows empty state when no insight exists for this week
+    ✓ projected saving formatted correctly ("12.4 kg/year")
+
+  CarbonDonut.test.tsx:
+    ✓ renders chart with correct number of segments for provided data
+    ✓ renders accessible title and description
+    ✓ shows "no data" state on empty data array
+    ✓ total displayed matches sum of provided values
+
+  LAYER 3: INTEGRATION TESTS (Supertest on real Express + test PostgreSQL)
+  ─────────────────────────────────────────────────────────────────────────
+  Uses a separate test database (TEST_DATABASE_URL env var).
+  Database is reset via Prisma migrate reset before each test suite.
+  Firebase Admin is mocked to return test user payloads.
+
+  packages/server/tests/integration/activities.test.ts:
+    ✓ POST /activities creates activity and returns calculated co2Grams
+    ✓ POST /activities rejects request with invalid category (400)
+    ✓ POST /activities rejects negative quantity (400 with validation details)
+    ✓ GET /activities returns paginated list for authenticated user only
+    ✓ GET /activities filters by category parameter correctly
+    ✓ GET /activities filters by date range correctly
+    ✓ PATCH /activities/:id updates activity owned by current user
+    ✓ PATCH /activities/:id returns 403 when user doesn't own activity
+    ✓ DELETE /activities/:id removes activity from DB
+    ✓ POST /activities/transport-preview returns distance + CO2 estimate
+    ✓ requests without Authorization header return 401
+    ✓ requests with expired token return 401 with AUTH_TOKEN_EXPIRED code
+
+  packages/server/tests/integration/auth.test.ts:
+    ✓ POST /auth/verify-token creates new user on first login
+    ✓ POST /auth/verify-token returns existing user on subsequent logins
+    ✓ POST /auth/verify-token rejects invalid JWT (Firebase mock returns error)
+    ✓ DELETE /auth/logout invalidates token (subsequent request returns 401)
+    ✓ rate limiter returns 429 after 5 failed auth attempts from same IP
+
+  LAYER 4: ACCESSIBILITY TESTS (axe-core + Testing Library)
+  ───────────────────────────────────────────────────────────
+  packages/client/tests/accessibility/Dashboard.a11y.test.tsx:
+    ✓ Dashboard page has no axe-core accessibility violations
+    ✓ all interactive elements have accessible names
+    ✓ color contrast meets WCAG AA standards
+    ✓ chart elements have aria-label describing data
+
+  packages/client/tests/accessibility/ActivityForm.a11y.test.tsx:
+    ✓ form inputs have associated labels
+    ✓ error messages are associated with their inputs via aria-describedby
+    ✓ submit button has accessible name
+    ✓ focus management after form submission returns to logical position
+
+  LAYER 5: E2E TESTS (Playwright — runs against local dev server)
+  ────────────────────────────────────────────────────────────────
+  e2e/auth.spec.ts:
+    ✓ User can sign in with Google (mocked Firebase in test mode)
+    ✓ Unauthenticated user is redirected to login page
+    ✓ User stays signed in on page refresh (persistent session)
+
+  e2e/logActivity.spec.ts:
+    ✓ User can log a transport activity with map-picked route
+    ✓ CO2 amount is displayed before and after saving
+    ✓ Dashboard total updates after logging activity
+    ✓ Activity appears in activity list after logging
+
+  e2e/insights.spec.ts:
+    ✓ Insights page shows latest weekly report
+    ✓ Empty state shown correctly for new user with no data
+
+  LAYER 6: PERFORMANCE (Lighthouse CI in GitHub Actions)
+  ────────────────────────────────────────────────────────
+  Performance budget (Lighthouse):
+    Performance score      : ≥ 90
+    Accessibility score    : ≥ 95
+    Best Practices score   : ≥ 95
+    SEO score              : ≥ 90
+    LCP                    : < 2.5s
+    TBT                    : < 300ms
+    CLS                    : < 0.1
+
+  CI PIPELINE ORDER: lint → typecheck → unit → integration → build → lighthouse → e2e
+  The pipeline fails fast — lint errors block everything downstream.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+13. ACCESSIBILITY IMPLEMENTATION (WCAG 2.1 AA — Target: 98/100)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SYSTEMATIC IMPLEMENTATION (not an afterthought checklist):
+
+  SEMANTIC HTML:
+    - All pages use proper landmark roles: <header>, <nav>, <main>, <footer>
+    - Headings form a logical hierarchy: h1 (page title) → h2 (section) → h3 (card)
+    - No <div> used as interactive element (use <button> or <a>)
+    - Lists use <ul>/<ol>, not divs with padding
+
+  FORMS:
+    - Every <input> has <label> associated via htmlFor
+    - Error messages use aria-describedby on the input they describe
+    - Required fields have aria-required="true" in addition to visual indicator
+    - Autocomplete attributes set on relevant fields (email, name)
+
+  CHARTS & DATA VISUALISATION:
+    - Every chart has aria-label with complete data summary
+    - Color is never the ONLY means of conveying information (patterns + labels)
+    - Donut chart: accessible legend table below chart for screen readers
+    - Heatmap: keyboard navigable cells with aria-label "June 5: 2.1 kgCO2e"
+
+  COLOUR CONTRAST:
+    - All text/background combinations: minimum 4.5:1 ratio (AA)
+    - Large text (18pt+): minimum 3:1 ratio
+    - Focus indicators: 3:1 contrast ratio minimum (enhanced focus ring)
+    - Tested with Colour Contrast Analyser on every new component
+
+  KEYBOARD NAVIGATION:
+    - Full keyboard access to all features (no mouse-only interactions)
+    - Visible focus indicator on all interactive elements (:focus-visible CSS)
+    - Modal dialogs trap focus and restore on close
+    - Skip navigation link at top of page ("Skip to main content")
+    - Google Maps picker: accessible via keyboard with arrow key support
+
+  RESPONSIVE:
+    - Mobile-first CSS (320px minimum supported width)
+    - Touch targets: minimum 44×44px (WCAG 2.5.5)
+    - Bottom navigation on mobile with accessible labels
+    - No horizontal scroll on any page
+
+  MOTION:
+    - @media (prefers-reduced-motion: reduce): all animations disabled
+    - No auto-playing content, no flashing (>3 Hz) anywhere
+
+  SCREEN READER:
+    - Live regions (aria-live="polite") for dynamic content updates
+      (e.g., CO2 preview updating as user changes route)
+    - Loading states announced: aria-live on spinner containers
+    - Toast notifications: role="alert" for important messages
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+14. UI/UX DESIGN SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VISUAL LANGUAGE:
+  Primary color    : #16a34a (green-600) — progress, positive, nature
+  Accent           : #0ea5e9 (sky-500) — information, water
+  Warning          : #f59e0b (amber-500) — high emissions
+  Danger           : #ef4444 (red-500) — over-budget
+  Background       : #f9fafb (gray-50) — off-white, easy on eyes
+  Surface          : #ffffff (white) — cards, modals
+  Text primary     : #111827 (gray-900)
+  Text secondary   : #6b7280 (gray-500)
+
+  Typography: Inter (Google Fonts) — clean, legible, widely recognized
+    Display: 28px/700 (dashboard total)
+    Heading: 20px/600 (section titles)
+    Body: 16px/400 (default)
+    Caption: 14px/400 (timestamps, labels)
+    Micro: 12px/500 (badges, tags)
+
+  Spacing: 4px grid system (Tailwind's default)
+  Border radius: 8px cards, 12px large cards, 20px pills
+  Shadows: subtle — shadow-sm only. No heavy drop shadows.
+
+PAGES & KEY UX FLOWS:
+
+  ONBOARDING (3 steps):
+    Step 1: Region picker (India default, state selection for grid accuracy)
+    Step 2: Weekly carbon budget setter (default 100kg, slider with context)
+    Step 3: Primary activity category (what to track first)
+    Skip option available. Defaults are sensible and pre-populated.
+
+  DASHBOARD:
+    - Top: "Your carbon this week" — large number + vs budget ring
+    - Middle: Category breakdown donut chart
+    - Bottom: Recent activities list (last 5, "View all" link)
+    - FAB (Floating Action Button): "Log Activity" (primary user action)
+    - Weekly streak badge in header
+
+  LOG ACTIVITY PAGE:
+    - Category selector (tabbed: Transport / Food / Energy / Shopping)
+    - TRANSPORT: Source/Destination inputs with Places autocomplete,
+                 mode selector, map preview, live CO2 delta
+    - FOOD: Food search with quantity, unit selector (g/kg/servings)
+    - ENERGY: Type (electricity/gas/LPG), amount, auto-fill from bill photo (OCR)
+    - SHOPPING: Item category, approx price or item count
+
+  INSIGHTS PAGE:
+    - Weekly AI insight card (highlighted, full-width)
+    - 30-day trend line chart (Recharts)
+    - Carbon heatmap (GitHub contribution calendar style, D3)
+    - Category comparison: this week vs last week
+
+  GOALS PAGE:
+    - Active goals with progress bars (circular + text)
+    - Suggested goals based on user's highest-emission category
+    - Goal history
+
+  COMMUNITY PAGE:
+    - Percentile gauge: "Better than 67% of Rajasthan users"
+    - Regional trend (live Firestore data)
+    - Leaderboard (top 10 in region, with opt-out)
+
+  MOBILE UX:
+    - Bottom navigation: Dashboard / Log / Insights / Goals / Profile
+    - Swipe-to-delete on activity cards
+    - Pull-to-refresh on dashboard
+    - Native-feeling transitions (Framer Motion reduced-motion aware)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+15. CODE QUALITY STANDARDS (Target: 93/100)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TYPESCRIPT CONFIGURATION (tsconfig.json):
+  "strict": true                    // enables all strict checks
+  "noUncheckedIndexedAccess": true  // prevents T[i] silently returning undefined
+  "noImplicitAny": true             // no implicit any (already in strict)
+  "exactOptionalPropertyTypes": true
+  "noUnusedLocals": true
+  "noUnusedParameters": true
+  "noFallthroughCasesInSwitch": true
+
+  ZERO TOLERANCE: no `as any`, no `// @ts-ignore` anywhere. No exceptions.
+  If you need to cast, document WHY in a comment. If you can't explain why, fix the type.
+
+ESLINT RULES (non-negotiable):
+  @typescript-eslint/no-explicit-any: error
+  @typescript-eslint/no-unused-vars: error
+  @typescript-eslint/explicit-function-return-type: warn
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps: error
+  jsx-a11y/alt-text: error                    // accessibility plugin
+  jsx-a11y/aria-props: error
+  jsx-a11y/heading-has-content: error
+  no-console: warn (use logger service instead)
+
+NAMING CONVENTIONS:
+  Components      : PascalCase    (ActivityForm.tsx)
+  Hooks           : camelCase     (useActivities.ts), always prefix "use"
+  Services        : camelCase     (carbonCalc.service.ts)
+  Types/Interfaces: PascalCase    (ActivityLog, not IActivityLog)
+  Constants       : SCREAMING_SNAKE (EMISSION_FACTORS)
+  Files           : kebab-case for configs, PascalCase for components
+
+DOCUMENTATION:
+  - JSDoc on all public functions in service layer
+  - Each route documented with JSDoc-style comment: @route, @access, @body
+  - README.md: architecture overview, setup steps, env vars, test commands
+  - CONTRIBUTING.md: commit format, PR checklist, testing requirements
+
+GIT HYGIENE:
+  - Conventional commits enforced via commitlint
+  - No WIP commits to main branch
+  - PR template includes: "Does this PR include tests? Y/N"
+  - Feature branches: feature/log-transport-activity
+  - Fix branches: fix/streak-reset-on-budget-exceeded
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+16. PERFORMANCE BUDGET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FRONTEND:
+  Initial JS bundle    : < 150KB gzipped (code splitting via React.lazy)
+  CSS bundle           : < 20KB (Tailwind JIT purges unused)
+  Total page weight    : < 300KB on initial load
+  Time to Interactive  : < 3.5s on 3G
+  LCP                  : < 2.5s on 4G
+  CLS                  : < 0.1
+
+PERFORMANCE TECHNIQUES:
+  - React.lazy() + Suspense for all page components (route-level splitting)
+  - react-window for virtualised activity list (no DOM explosion at 1000+ items)
+  - React Query caching: staleTime 5min for activities, 1h for insights
+  - useMemo for expensive chart data transformations
+  - Image optimization: WebP format, lazy loading, explicit dimensions
+  - Service worker: CacheFirst for static assets, NetworkFirst for API
+  - Redis caching on backend: emission factors (indefinite), AI insights (24h),
+    community stats (5 min TTL)
+
+BACKEND:
+  API response time p50  : < 100ms (simple GET with cache hit)
+  API response time p95  : < 500ms (Gemini API excluded, async)
+  API response time p99  : < 1000ms
+  DB query time          : all queries have composite indexes (see schema @@index)
+  Redis hit rate target  : > 70% for emission factor lookups
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+17. SPRINT BREAKDOWN (Hackathon Pace — 3 Sprints)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SPRINT 1 — FOUNDATION (Days 1–2):
+  Priority: Foundation must be rock-solid before any feature work.
+
+  Day 1:
+    [ ] pnpm monorepo initialized with workspaces
+    [ ] TypeScript strict config in all packages
+    [ ] ESLint + Prettier + Husky + commitlint configured
+    [ ] PostgreSQL schema + Prisma migrations complete
+    [ ] EmissionFactor seed data loaded (all categories, IPCC AR6)
+    [ ] Express app skeleton: Helmet, CORS, rate limiter, error handler
+    [ ] Firebase Admin SDK integrated + auth middleware
+    [ ] Zod schemas in shared package
+    [ ] Vitest + Supertest configured for backend
+    [ ] TEST: Auth integration tests passing (register + login flow)
+
+  Day 2:
+    [ ] All API endpoints implemented (Activities CRUD + Stats)
+    [ ] CarbonCalcService complete with all emission factor lookups
+    [ ] Redis session management
+    [ ] TEST: All activities integration tests passing
+    [ ] TEST: CarbonCalcService unit tests passing (>90% coverage)
+    [ ] React app scaffolded: Vite + Tailwind + shadcn + Zustand + React Query
+    [ ] Firebase client SDK + Google Sign-In working
+    [ ] Authentication flow: login → token → persist session
+    [ ] MSW handlers for all API endpoints
+    [ ] Vitest + RTL configured for frontend
+
+SPRINT 2 — CORE FEATURES (Days 3–4):
+  Priority: All 7 evaluation dimensions addressed before polish.
+
+  Day 3:
+    [ ] Dashboard page: weekly total, category donut, recent activities
+    [ ] Log Activity page: all 4 categories with form validation
+    [ ] TransportPicker: Google Places Autocomplete + Maps display
+    [ ] Google Routes API backend integration + transport-preview endpoint
+    [ ] TEST: ActivityForm component tests passing
+    [ ] TEST: Dashboard a11y tests passing
+    [ ] Gemini service: prompt builder + response parser
+    [ ] Insights generation endpoint (manual trigger)
+    [ ] Insights page: display AI card + trend chart
+
+  Day 4:
+    [ ] Goals page: CRUD + progress visualization
+    [ ] Community page: Firestore real-time listener + percentile display
+    [ ] Firebase Cloud Messaging: FCM token registration + push on insight ready
+    [ ] Streak service + Redis writes + StreakBadge component
+    [ ] Carbon heatmap (D3 calendar) on Insights page
+    [ ] GA4 integration: track activity_logged, insight_viewed events
+    [ ] TEST: E2E tests for auth flow + log activity flow passing
+    [ ] TEST: All component tests passing
+    [ ] TEST: Accessibility tests passing on all pages
+
+SPRINT 3 — POLISH & SUBMISSION (Day 5):
+  Priority: Score optimization. Don't add features — fix gaps.
+
+  Day 5 (first half):
+    [ ] Run Lighthouse CI: fix any score < 90
+    [ ] Run axe-core: fix any remaining a11y violations
+    [ ] Review ESLint output: zero errors, zero warnings
+    [ ] Code coverage report: ensure 82%+ line coverage
+    [ ] All test suites green in CI pipeline
+    [ ] Security audit: check all env vars never exposed to client bundle
+    [ ] README.md complete: setup, architecture, env vars, test commands
+    [ ] .env.example complete with all required variables documented
+
+  Day 5 (second half):
+    [ ] PWA: manifest.json, service worker, offline activity queue
+    [ ] Final Lighthouse run: all scores ≥ 90
+    [ ] Production build: verify bundle sizes within budget
+    [ ] Deploy: Vercel (frontend) + Render (backend)
+    [ ] Smoke test production deployment (log an activity end-to-end)
+    [ ] Record demo video highlighting: AI insight, Maps route, real-time community
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18. DEPLOYMENT STRATEGY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FRONTEND: Vercel
+  - Zero-config Vite deployment
+  - Automatic preview deploys on every PR
+  - Environment variables set in Vercel dashboard
+  - Custom domain (if available): carbonpulse.vercel.app
+
+BACKEND: Render (Docker)
+  - Dockerfile: node:20-alpine, multi-stage build (deps → build → prod)
+  - Environment variables set in Render dashboard
+  - Health check endpoint: GET /health (used by Render for zero-downtime restarts)
+  - Render's free tier: note cold start issue — add /health pre-warm comment in README
+
+DATABASE: Render PostgreSQL (or Supabase free tier)
+  - Prisma migrations run on deploy (not in Dockerfile, separate release command)
+  - Connection pooling via Prisma's built-in connection pool (limit: 5 on free tier)
+
+REDIS: Upstash (serverless Redis, free tier 10K cmds/day)
+  - Connection via REDIS_URL env var (TLS enabled)
+
+CI/CD: GitHub Actions
+  name: CI
+  on: [push, pull_request]
+  jobs:
+    lint:       pnpm lint
+    typecheck:  pnpm typecheck
+    test:       pnpm test (Vitest)
+    build:      pnpm build
+    lighthouse: (on main branch only)
+    e2e:        (on main branch only, Playwright)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+19. EVALUATION SCORE TARGETS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CATEGORY          PREV   TARGET   HOW WE HIT IT
+──────────────    ─────  ──────   ─────────────────────────────────────────────
+Code Quality       86     93      TypeScript strict mode, zero any, ESLint clean,
+                                  JSDoc on all services, zero console.log in prod,
+                                  conventional commits, consistent naming.
+
+Security           98     98      Identical security posture to Challenge 1.
+                                  Argon2id, JWT, Helmet, Zod validation, Prisma
+                                  (SQL injection structurally impossible), rate limits,
+                                  no API keys in frontend bundle.
+
+Efficiency        100    100      Maintain what worked. Add React.lazy, react-window,
+                                  Redis caching, DB composite indexes, React Query
+                                  with intelligent staleTime configuration.
+
+Testing             0     93      Comprehensive /tests folder: 7 unit test files,
+                                  5 integration test files, 5 component test files,
+                                  3 a11y test files, 5 E2E spec files. Coverage 82%+.
+                                  All tests pass in CI. This is the single biggest
+                                  win: +6.2 points to overall score from Testing alone.
+
+Accessibility      96     98      axe-core automated tests on all pages (fail if any
+                                  violations). Semantic HTML, ARIA labels on charts,
+                                  error-input associations, focus management, color
+                                  contrast AA minimum, keyboard navigation complete.
+
+Google Services    75     92      7 Google services, each load-bearing:
+                                  Firebase Auth (security boundary),
+                                  Maps JS API (route visualization),
+                                  Routes API (backend distance calculation),
+                                  Places API (location autocomplete),
+                                  Gemini API (AI insights — core feature),
+                                  Firestore (real-time community data),
+                                  FCM (push notifications),
+                                  GA4 (analytics). Remove any one → feature breaks.
+
+Problem Align.     98     98      Carbon footprint tracking: ✓
+                                  Simple actions: ✓ (1-tap activity logging)
+                                  Personalized insights: ✓ (Gemini per user)
+                                  Individual: ✓ (personal dashboard)
+                                  Track: ✓ (streaks, goals, history)
+                                  Reduce: ✓ (suggestions, offset recommendations)
+
+──────────────    ─────  ──────
+PROJECTED TOTAL   85.99  ~95.2   Formula: (93+98+100+98+92+93) × 15.55% + 93 × 6.7%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+20. RISK REGISTER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RISK                              PROBABILITY  IMPACT  MITIGATION
+──────────────────────────────    ───────────  ──────  ───────────────────────────
+Gemini API rate limits during     Medium       High    Cache responses 24h in Redis.
+demo                                                   Use gemini-1.5-flash (higher
+                                                       free tier limits than Pro).
+
+Google Maps API key exposed        Low          High    Maps key: HTTP referrer restricted
+in frontend bundle                                     to production domain. Routes API
+                                                       key: backend only, never in client.
+
+E2E tests flaky on CI             Medium       Medium  Use Playwright's waitForSelector
+                                                       over arbitrary timeouts. Mock
+                                                       external APIs (Firebase, Maps).
+
+Render cold start breaks demo     High          Medium  Document warmup in README.
+                                                       Keep health check endpoint pinged.
+
+Prisma migration fails on         Low           High    Always test migrations on a
+production deploy                                       copy of prod schema first.
+                                                       Rollback migration ready.
+
+Testing score < 93 (partial       Low           High    Run coverage report locally
+test credit from evaluator)                             before submission. Ensure
+                                                       test:coverage script is in
+                                                       package.json and passes 82%+.
+
+Gemini returns non-JSON output    Medium        Low     parseResponse() has JSON.parse
+                                                       in try/catch with template fallback.
+                                                       User experience never breaks.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+APPENDIX: KEY MANTRAS FOR EXECUTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. "TESTS FIRST, ALWAYS."
+   Create the /tests folder and at least one test file before writing
+   any feature code. It is psychologically easier to maintain than to
+   bolt on later. The zero we scored is 100% avoidable.
+
+2. "GOOGLE SERVICES ARE ARCHITECTURALLY LOAD-BEARING, OR THEY DON'T COUNT."
+   If you can remove a Google service and the app still works identically,
+   it will score like a decoration. Every service must be on the critical path.
+
+3. "NEVER EXPOSE BACKEND API KEYS TO THE FRONTEND BUNDLE."
+   Routes API key, Gemini API key — server-only. The evaluator WILL check
+   if these are in the client bundle (it's a security check, not just Google policy).
+
+4. "ACCESSIBILITY IS NOT A CHECKLIST. IT IS A MINDSET."
+   Write aria-label on charts the moment you write the chart.
+   Associate error messages with inputs the moment you write the input.
+   Run axe-core in your component test the moment you write the component.
+   Retrofitting is 3x harder and always incomplete.
+
+5. "PERSONALIZATION IS THE DIFFERENTIATOR."
+   Every team will show a total CO2 number. Only CarbonPulse will say:
+   "Your rice consumption (4 servings this week) added 17% to your food
+   emissions. Reducing by 2 servings saves ~8 kg CO2e monthly."
+   That specificity — powered by real IPCC factors + Gemini — is what
+   makes this a 95+ app, not a 75 app.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+END OF PLAN — CarbonPulse Technical Architecture v1.0.0
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ENDOFPLAN
+
+echo "Plan written successfully"
+wc -l /mnt/user-data/outputs/CarbonPulse_TechnicalPlan.txt
+Done
+
+You are out of free messages until 3:40 PM
+Keep working
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.

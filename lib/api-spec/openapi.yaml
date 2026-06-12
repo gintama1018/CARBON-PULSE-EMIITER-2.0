@@ -1,0 +1,705 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: CarbonPulse API — Precision carbon intelligence platform
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: users
+    description: User profile management
+  - name: activities
+    description: Carbon activity logging
+  - name: insights
+    description: AI-powered carbon insights
+  - name: goals
+    description: Carbon reduction goals
+  - name: community
+    description: Community benchmarking
+  - name: emission-factors
+    description: Emission factor reference data
+  - name: streak
+    description: Streak and gamification
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ── USER ─────────────────────────────────────────────────────────────────────
+  /users/me:
+    get:
+      operationId: getMe
+      tags: [users]
+      summary: Get current user profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Not found
+    post:
+      operationId: upsertMe
+      tags: [users]
+      summary: Create or update user profile (called on first login)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "200":
+          description: User upserted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      operationId: updateMe
+      tags: [users]
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # ── ACTIVITIES ────────────────────────────────────────────────────────────────
+  /activities:
+    get:
+      operationId: listActivities
+      tags: [activities]
+      summary: List user activities with optional filters
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: from
+          in: query
+          schema: { type: string, format: date }
+        - name: to
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: Paginated activity list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityPage"
+    post:
+      operationId: createActivity
+      tags: [activities]
+      summary: Log a new carbon activity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivityInput"
+      responses:
+        "201":
+          description: Created activity with calculated CO2
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+
+  /activities/summary:
+    get:
+      operationId: getActivitySummary
+      tags: [activities]
+      summary: Dashboard summary — totals by period and category
+      responses:
+        "200":
+          description: Carbon summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivitySummary"
+
+  /activities/trend:
+    get:
+      operationId: getActivityTrend
+      tags: [activities]
+      summary: 30-day daily CO2 trend for sparkline/area chart
+      responses:
+        "200":
+          description: Array of daily totals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrendPoint"
+
+  /activities/heatmap:
+    get:
+      operationId: getActivityHeatmap
+      tags: [activities]
+      summary: Full-year contribution heatmap data
+      responses:
+        "200":
+          description: Array of day-level CO2 values
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeatmapDay"
+
+  /activities/transport-preview:
+    post:
+      operationId: previewTransport
+      tags: [activities]
+      summary: Preview CO2 for a transport route before logging
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransportPreviewInput"
+      responses:
+        "200":
+          description: Route distance and CO2 estimates per mode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransportPreview"
+
+  /activities/{id}:
+    get:
+      operationId: getActivity
+      tags: [activities]
+      summary: Get a single activity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+    patch:
+      operationId: updateActivity
+      tags: [activities]
+      summary: Update an activity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivityUpdate"
+      responses:
+        "200":
+          description: Updated activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+    delete:
+      operationId: deleteActivity
+      tags: [activities]
+      summary: Delete an activity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── INSIGHTS ──────────────────────────────────────────────────────────────────
+  /insights:
+    get:
+      operationId: listInsights
+      tags: [insights]
+      summary: List AI insights (most recent first)
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 8 }
+      responses:
+        "200":
+          description: List of insights
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Insight"
+
+  /insights/latest:
+    get:
+      operationId: getLatestInsight
+      tags: [insights]
+      summary: Get the most recent AI insight
+      responses:
+        "200":
+          description: Latest insight
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Insight"
+        "404":
+          description: No insight yet
+
+  /insights/generate:
+    post:
+      operationId: generateInsight
+      tags: [insights]
+      summary: Trigger Gemini insight generation for current week
+      responses:
+        "201":
+          description: Generated insight
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Insight"
+
+  # ── GOALS ─────────────────────────────────────────────────────────────────────
+  /goals:
+    get:
+      operationId: listGoals
+      tags: [goals]
+      summary: List user goals
+      responses:
+        "200":
+          description: Goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Goal"
+    post:
+      operationId: createGoal
+      tags: [goals]
+      summary: Create a carbon reduction goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalInput"
+      responses:
+        "201":
+          description: Created goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+
+  /goals/progress:
+    get:
+      operationId: getGoalProgress
+      tags: [goals]
+      summary: Get progress toward current active goal this week
+      responses:
+        "200":
+          description: Goal progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoalProgress"
+
+  /goals/{id}:
+    patch:
+      operationId: updateGoal
+      tags: [goals]
+      summary: Update a goal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalUpdate"
+      responses:
+        "200":
+          description: Updated goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+    delete:
+      operationId: deleteGoal
+      tags: [goals]
+      summary: Delete a goal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── COMMUNITY ─────────────────────────────────────────────────────────────────
+  /community/stats:
+    get:
+      operationId: getCommunityStats
+      tags: [community]
+      summary: Get community benchmarking — user's percentile and regional averages
+      responses:
+        "200":
+          description: Community stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityStats"
+
+  # ── EMISSION FACTORS ──────────────────────────────────────────────────────────
+  /emission-factors:
+    get:
+      operationId: listEmissionFactors
+      tags: [emission-factors]
+      summary: List all emission factors grouped by category
+      responses:
+        "200":
+          description: Emission factors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmissionFactor"
+
+  # ── STREAK ────────────────────────────────────────────────────────────────────
+  /streak:
+    get:
+      operationId: getStreak
+      tags: [streak]
+      summary: Get user's current streak and badges
+      responses:
+        "200":
+          description: Streak info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreakInfo"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    # ── USER ───────────────────────────────────────────────────────────────────
+    User:
+      type: object
+      required: [id, email, region, weeklyBudgetKg, createdAt]
+      properties:
+        id:            { type: string }
+        email:         { type: string }
+        displayName:   { type: ["string", "null"] }
+        avatarUrl:     { type: ["string", "null"] }
+        region:        { type: string }
+        weeklyBudgetKg: { type: number }
+        createdAt:     { type: string }
+
+    UserInput:
+      type: object
+      required: [email]
+      properties:
+        email:       { type: string }
+        displayName: { type: string }
+        avatarUrl:   { type: string }
+        region:      { type: string }
+
+    UserUpdate:
+      type: object
+      properties:
+        displayName:    { type: string }
+        avatarUrl:      { type: string }
+        region:         { type: string }
+        weeklyBudgetKg: { type: number }
+
+    # ── ACTIVITY ───────────────────────────────────────────────────────────────
+    Activity:
+      type: object
+      required: [id, userId, category, subcategory, quantity, unit, co2Grams, loggedAt, createdAt]
+      properties:
+        id:          { type: string }
+        userId:      { type: string }
+        category:    { type: string }
+        subcategory: { type: string }
+        quantity:    { type: number }
+        unit:        { type: string }
+        co2Grams:    { type: number }
+        description: { type: ["string", "null"] }
+        loggedAt:    { type: string }
+        createdAt:   { type: string }
+        originLat:   { type: ["number", "null"] }
+        originLng:   { type: ["number", "null"] }
+        destLat:     { type: ["number", "null"] }
+        destLng:     { type: ["number", "null"] }
+
+    ActivityInput:
+      type: object
+      required: [category, subcategory, quantity, unit]
+      properties:
+        category:    { type: string }
+        subcategory: { type: string }
+        quantity:    { type: number }
+        unit:        { type: string }
+        description: { type: string }
+        loggedAt:    { type: string }
+        originLat:   { type: number }
+        originLng:   { type: number }
+        destLat:     { type: number }
+        destLng:     { type: number }
+
+    ActivityUpdate:
+      type: object
+      properties:
+        quantity:    { type: number }
+        description: { type: string }
+        loggedAt:    { type: string }
+
+    ActivityPage:
+      type: object
+      required: [data, total, page, limit]
+      properties:
+        data:  { type: array, items: { $ref: "#/components/schemas/Activity" } }
+        total: { type: integer }
+        page:  { type: integer }
+        limit: { type: integer }
+
+    ActivitySummary:
+      type: object
+      required: [todayKg, weekKg, monthKg, weekBudgetKg, weekPercentUsed, categoryBreakdown, topCategory]
+      properties:
+        todayKg:       { type: number }
+        weekKg:        { type: number }
+        monthKg:       { type: number }
+        weekBudgetKg:  { type: number }
+        weekPercentUsed: { type: number }
+        topCategory:   { type: ["string", "null"] }
+        categoryBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryTotal"
+        recentActivities:
+          type: array
+          items:
+            $ref: "#/components/schemas/Activity"
+
+    CategoryTotal:
+      type: object
+      required: [category, co2Kg, count, percent]
+      properties:
+        category: { type: string }
+        co2Kg:    { type: number }
+        count:    { type: integer }
+        percent:  { type: number }
+
+    TrendPoint:
+      type: object
+      required: [date, co2Kg]
+      properties:
+        date:   { type: string }
+        co2Kg:  { type: number }
+
+    HeatmapDay:
+      type: object
+      required: [date, co2Kg, level]
+      properties:
+        date:   { type: string }
+        co2Kg:  { type: number }
+        level:  { type: integer }
+
+    TransportPreviewInput:
+      type: object
+      required: [originLat, originLng, destLat, destLng]
+      properties:
+        originLat: { type: number }
+        originLng: { type: number }
+        destLat:   { type: number }
+        destLng:   { type: number }
+
+    TransportPreview:
+      type: object
+      required: [distanceKm, modes]
+      properties:
+        distanceKm: { type: number }
+        modes:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransportModeEstimate"
+
+    TransportModeEstimate:
+      type: object
+      required: [mode, label, co2Grams, emoji]
+      properties:
+        mode:     { type: string }
+        label:    { type: string }
+        co2Grams: { type: number }
+        emoji:    { type: string }
+
+    # ── INSIGHT ────────────────────────────────────────────────────────────────
+    Insight:
+      type: object
+      required: [id, userId, weekStartDate, insightText, primaryDriver, suggestedAction, projectedSavingKgYear, totalCo2KgForWeek, deltaFromPrevWeek, createdAt]
+      properties:
+        id:                   { type: string }
+        userId:               { type: string }
+        weekStartDate:        { type: string }
+        insightText:          { type: string }
+        primaryDriver:        { type: string }
+        suggestedAction:      { type: string }
+        projectedSavingKgYear: { type: number }
+        totalCo2KgForWeek:    { type: number }
+        deltaFromPrevWeek:    { type: number }
+        createdAt:            { type: string }
+
+    # ── GOAL ───────────────────────────────────────────────────────────────────
+    Goal:
+      type: object
+      required: [id, userId, targetKgPerWeek, isActive, startDate, createdAt]
+      properties:
+        id:               { type: string }
+        userId:           { type: string }
+        targetKgPerWeek:  { type: number }
+        category:         { type: ["string", "null"] }
+        isActive:         { type: boolean }
+        startDate:        { type: string }
+        endDate:          { type: ["string", "null"] }
+        createdAt:        { type: string }
+
+    GoalInput:
+      type: object
+      required: [targetKgPerWeek]
+      properties:
+        targetKgPerWeek: { type: number }
+        category:        { type: string }
+        startDate:       { type: string }
+        endDate:         { type: string }
+
+    GoalUpdate:
+      type: object
+      properties:
+        targetKgPerWeek: { type: number }
+        isActive:        { type: boolean }
+        endDate:         { type: string }
+
+    GoalProgress:
+      type: object
+      required: [hasGoal, targetKgPerWeek, currentKg, remainingKg, percentUsed, onTrack]
+      properties:
+        hasGoal:         { type: boolean }
+        targetKgPerWeek: { type: number }
+        currentKg:       { type: number }
+        remainingKg:     { type: number }
+        percentUsed:     { type: number }
+        onTrack:         { type: boolean }
+
+    # ── COMMUNITY ──────────────────────────────────────────────────────────────
+    CommunityStats:
+      type: object
+      required: [userWeekKg, globalAvgKg, userPercentile, totalUsers, regionLabel, categoryAverages]
+      properties:
+        userWeekKg:      { type: number }
+        globalAvgKg:     { type: number }
+        userPercentile:  { type: number }
+        totalUsers:      { type: integer }
+        regionLabel:     { type: string }
+        categoryAverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryAverage"
+
+    CategoryAverage:
+      type: object
+      required: [category, avgKg, userKg]
+      properties:
+        category: { type: string }
+        avgKg:    { type: number }
+        userKg:   { type: number }
+
+    # ── EMISSION FACTOR ────────────────────────────────────────────────────────
+    EmissionFactor:
+      type: object
+      required: [id, category, subcategory, factorGPerUnit, unit, label, source]
+      properties:
+        id:            { type: string }
+        category:      { type: string }
+        subcategory:   { type: string }
+        factorGPerUnit: { type: number }
+        unit:          { type: string }
+        label:         { type: string }
+        source:        { type: string }
+
+    # ── STREAK ─────────────────────────────────────────────────────────────────
+    StreakInfo:
+      type: object
+      required: [currentStreak, longestStreak, todayLogged, weeklyBudgetKg, weekKg, badges]
+      properties:
+        currentStreak:   { type: integer }
+        longestStreak:   { type: integer }
+        todayLogged:     { type: boolean }
+        weeklyBudgetKg:  { type: number }
+        weekKg:          { type: number }
+        badges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Badge"
+
+    Badge:
+      type: object
+      required: [id, label, description, earned, earnedAt]
+      properties:
+        id:          { type: string }
+        label:       { type: string }
+        description: { type: string }
+        earned:      { type: boolean }
+        earnedAt:    { type: ["string", "null"] }

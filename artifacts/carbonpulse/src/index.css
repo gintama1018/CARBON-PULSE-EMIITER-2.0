@@ -1,0 +1,162 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "Space Mono", monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background: 140 10% 95%;
+  --foreground: 160 20% 10%;
+  --border: 140 10% 85%;
+  --input: 140 10% 85%;
+  --ring: 145 70% 40%;
+  
+  --card: 140 10% 100%;
+  --card-foreground: 160 20% 10%;
+  --card-border: 140 10% 90%;
+  
+  --popover: 140 10% 100%;
+  --popover-foreground: 160 20% 10%;
+  --popover-border: 140 10% 90%;
+  
+  --primary: 145 70% 35%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 140 10% 90%;
+  --secondary-foreground: 160 20% 20%;
+  
+  --muted: 140 10% 90%;
+  --muted-foreground: 160 10% 40%;
+  
+  --accent: 145 70% 90%;
+  --accent-foreground: 145 70% 25%;
+  
+  --destructive: 0 80% 55%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --sidebar: 140 10% 98%;
+  --sidebar-foreground: 160 20% 20%;
+  --sidebar-border: 140 10% 85%;
+  --sidebar-primary: 145 70% 35%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 140 10% 90%;
+  --sidebar-accent-foreground: 160 20% 20%;
+  --sidebar-ring: 145 70% 40%;
+  
+  --chart-1: 145 70% 40%; /* Emerald */
+  --chart-2: 200 80% 50%; /* Sky Blue */
+  --chart-3: 35 90% 50%;  /* Amber */
+  --chart-4: 270 60% 60%; /* Violet */
+  --chart-5: 350 70% 60%; /* Rose */
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: 160 10% 8%; /* Deep forest dark */
+  --foreground: 140 10% 95%;
+  --border: 160 10% 18%;
+  --input: 160 10% 18%;
+  --ring: 145 80% 50%; /* Electric lime/emerald */
+  
+  --card: 160 10% 12%;
+  --card-foreground: 140 10% 95%;
+  --card-border: 160 10% 20%;
+  
+  --popover: 160 10% 12%;
+  --popover-foreground: 140 10% 95%;
+  --popover-border: 160 10% 20%;
+  
+  --primary: 145 80% 50%;
+  --primary-foreground: 160 20% 10%;
+  
+  --secondary: 160 10% 18%;
+  --secondary-foreground: 140 10% 90%;
+  
+  --muted: 160 10% 18%;
+  --muted-foreground: 140 10% 60%;
+  
+  --accent: 145 50% 20%;
+  --accent-foreground: 145 80% 80%;
+  
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --sidebar: 160 10% 10%;
+  --sidebar-foreground: 140 10% 95%;
+  --sidebar-border: 160 10% 18%;
+  --sidebar-primary: 145 80% 50%;
+  --sidebar-primary-foreground: 160 20% 10%;
+  --sidebar-accent: 160 10% 18%;
+  --sidebar-accent-foreground: 140 10% 90%;
+  --sidebar-ring: 145 80% 50%;
+  
+  --chart-1: 145 80% 50%; /* Emerald */
+  --chart-2: 200 90% 60%; /* Sky Blue */
+  --chart-3: 35 100% 50%; /* Amber */
+  --chart-4: 270 70% 70%; /* Violet */
+  --chart-5: 350 80% 65%; /* Rose */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground selection:bg-primary/20 selection:text-primary;
+  }
+}
