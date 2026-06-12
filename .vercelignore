@@ -1,0 +1,20 @@
+# Ignore Replit-specific files
+.replit
+.replitignore
+.agents/
+
+# Ignore the mockup sandbox — not needed in production
+artifacts/mockup-sandbox/
+
+# Ignore attached assets — large files not needed at runtime
+attached_assets/
+
+# Ignore local build artifacts
+artifacts/api-server/dist/
+artifacts/carbonpulse/dist/
+
+# Ignore test files
+artifacts/api-server/tests/
+
+# Ignore source maps (generated at build)
+**/*.map
