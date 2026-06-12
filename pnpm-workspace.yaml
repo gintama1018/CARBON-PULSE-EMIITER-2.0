@@ -2,8 +2,6 @@ packages:
   - artifacts/api-server
   - artifacts/carbonpulse
   - lib/*
-  - lib/integrations/*
-  - scripts
 
 autoInstallPeers: false
 
