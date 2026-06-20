@@ -1,5 +1,5 @@
 import React from "react";
-import { useGetActivitySummary, useGetMe, useGetActivityTrend, useGetActivityHeatmap, useGetStreak, useGetLatestInsight } from "@workspace/api-client-react";
+import { useGetActivitySummary, useGetMe, useGetActivityTrend, useGetStreak, useGetLatestInsight } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Link } from "wouter";

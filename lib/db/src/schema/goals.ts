@@ -14,6 +14,7 @@ export const goalsTable = pgTable("goals", {
   startDate: timestamp("start_date").notNull().defaultNow(),
   endDate: timestamp("end_date"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const insertGoalSchema = createInsertSchema(goalsTable);

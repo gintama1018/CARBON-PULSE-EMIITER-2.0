@@ -47,3 +47,12 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment variables (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# Generated API client / Zod types (regenerated during build)
+lib/api-client-react/src/generated/
+lib/api-zod/src/generated/

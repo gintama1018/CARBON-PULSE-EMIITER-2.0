@@ -31,7 +31,7 @@ router.get("/users/me", async (req, res) => {
 });
 
 // POST /users/me — upsert
-router.post("/users/me", async (req, res) => {
+router.post("/users/me", validate(UpsertMeBody), async (req, res) => {
   const userId = requireUserId(req, res);
   if (!userId) return;
   const body = req.body as z.infer<typeof UpsertMeBody>;

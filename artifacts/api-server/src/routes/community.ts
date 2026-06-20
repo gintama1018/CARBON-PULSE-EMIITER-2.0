@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db, activitiesTable, usersTable } from "@workspace/db";
-import { eq, and, gte, ne } from "drizzle-orm";
+import { eq, gte } from "drizzle-orm";
 import { requireUserId } from "../lib/requireUserId";
 import { gramsToKg } from "../lib/units";
 import { COMMUNITY_QUERY_LIMIT } from "../lib/constants";

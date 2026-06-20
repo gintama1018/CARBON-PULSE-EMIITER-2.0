@@ -10,7 +10,7 @@ import {
   ListActivitiesQueryParams,
   PreviewTransportBody,
 } from "@workspace/api-zod";
-import { eq, and, gte, lte, desc, count, sql } from "drizzle-orm";
+import { eq, and, gte, lte, desc, count } from "drizzle-orm";
 import { validate } from "../middleware/validate";
 import { calculateCo2, haversineDistanceKm, getTransportPreview } from "../services/carbonCalc.service";
 import { newId } from "../lib/ids";

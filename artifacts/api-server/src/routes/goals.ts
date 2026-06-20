@@ -104,7 +104,7 @@ router.patch("/goals/:id", validate(UpdateGoalParams, "params"), validate(Update
   if (body.isActive !== undefined) updates.isActive = body.isActive;
   if (body.endDate !== undefined) updates.endDate = new Date(body.endDate);
 
-  const [updated] = await db.update(goalsTable).set(updates)
+  const [updated] = await db.update(goalsTable).set({ ...updates, updatedAt: new Date() })
     .where(and(eq(goalsTable.id, req.params.id), eq(goalsTable.userId, userId)))
     .returning();
 
@@ -126,6 +126,7 @@ function formatGoal(g: typeof goalsTable.$inferSelect) {
     startDate: g.startDate.toISOString(),
     endDate: g.endDate?.toISOString() ?? null,
     createdAt: g.createdAt.toISOString(),
+    updatedAt: g.updatedAt.toISOString(),
   };
 }
 

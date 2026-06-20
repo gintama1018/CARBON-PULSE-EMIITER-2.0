@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useCreateActivity, usePreviewTransport, getGetActivitySummaryQueryKey, getGetActivityHeatmapQueryKey, getListActivitiesQueryKey, getGetActivityTrendQueryKey } from "@workspace/api-client-react";
+import { useCreateActivity, getGetActivitySummaryQueryKey, getGetActivityHeatmapQueryKey, getListActivitiesQueryKey, getGetActivityTrendQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Car, Leaf, Zap, ShoppingBag, Trash2, MapPin, Icon } from "lucide-react";
+import { Car, Leaf, Zap, ShoppingBag, Trash2, MapPin } from "lucide-react";
 
 const CATEGORIES = [
   { id: "transport", label: "Transport", icon: Car },

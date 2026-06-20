@@ -33,24 +33,33 @@ export default function Community() {
                 <CardTitle>Weekly Average Comparison</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="font-medium">You</span>
-                    <span className="font-mono">{stats.userWeekKg.toFixed(1)} kg</span>
-                  </div>
-                  <div className="w-full bg-secondary h-4 rounded-full overflow-hidden">
-                    <div className="h-full bg-primary" style={{ width: '40%' }} />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="font-medium">Community Average</span>
-                    <span className="font-mono">{stats.globalAvgKg.toFixed(1)} kg</span>
-                  </div>
-                  <div className="w-full bg-secondary h-4 rounded-full overflow-hidden">
-                    <div className="h-full bg-muted-foreground" style={{ width: '60%' }} />
-                  </div>
-                </div>
+                {(() => {
+                  const maxKg = Math.max(stats.userWeekKg, stats.globalAvgKg, 1);
+                  const userPercent = Math.min(100, (stats.userWeekKg / maxKg) * 100);
+                  const avgPercent = Math.min(100, (stats.globalAvgKg / maxKg) * 100);
+                  return (
+                    <>
+                      <div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="font-medium">You</span>
+                          <span className="font-mono">{stats.userWeekKg.toFixed(1)} kg</span>
+                        </div>
+                        <div className="w-full bg-secondary h-4 rounded-full overflow-hidden">
+                          <div className="h-full bg-primary transition-all duration-700" style={{ width: `${userPercent}%` }} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="font-medium">Community Average</span>
+                          <span className="font-mono">{stats.globalAvgKg.toFixed(1)} kg</span>
+                        </div>
+                        <div className="w-full bg-secondary h-4 rounded-full overflow-hidden">
+                          <div className="h-full bg-muted-foreground transition-all duration-700" style={{ width: `${avgPercent}%` }} />
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </CardContent>
             </Card>
 
