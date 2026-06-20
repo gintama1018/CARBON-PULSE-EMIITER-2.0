@@ -1,7 +1,7 @@
 {
   "version": 2,
   "installCommand": "npx -y pnpm@9.15.9 install --no-frozen-lockfile",
-  "buildCommand": "pnpm --filter @workspace/carbonpulse run build && node -e \"const fs = require('fs'); fs.cpSync('artifacts/carbonpulse/dist', 'dist', { recursive: true });\"",
+  "buildCommand": "pnpm --filter @workspace/carbonpulse run build && node scripts/copy-build.cjs",
   "outputDirectory": "dist",
   "framework": null,
   "functions": {
